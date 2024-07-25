@@ -36,21 +36,20 @@ public class TaskToCollectService {
         if (!status.equals("started")
                 && !status.equals("stopped")
                 && !status.equals("finished")
-                || status.equals("created")){
+                || status.equals("created")) {
             return HttpStatus.BAD_REQUEST;
-        }
-        else{
+        } else {
 
             TaskToCollect tmp = tasksRepository.findById(id).get();
             tmp.setStatus(status);
             final ObjectMapper mapper = new ObjectMapper();
-            Request.Post(collectorPath+"/v1/tasksToCollect")
-                    // .addHeader("Content-Type", "application/vnd.ms-excel")
+            Request.Post(collectorPath + "/v1/tasksToCollect")
                     .addHeader("Content-Type", "application/json")
                     .bodyString(mapper.writeValueAsString(tmp), ContentType.APPLICATION_JSON)
                     .execute();
             tasksRepository.save(tmp);
             return HttpStatus.OK;
+
         }
     }
 
@@ -87,11 +86,11 @@ public class TaskToCollectService {
     }
 
     public ResponseEntity<HttpStatus> patchTaskToCollect(TaskToCollect taskToCollect) throws IOException {
-        TaskToCollect tmp = tasksRepository.findById(taskToCollect.getId()).get();
-        if (!tmp.getStatus().equals(taskToCollect.getStatus())){
-            return ResponseEntity.ok(changeTaskStatus(tmp.getId(),taskToCollect.getStatus()));
-        }
-        tasksRepository.save(taskToCollect);
+            TaskToCollect tmp = tasksRepository.findById(taskToCollect.getId()).get();
+            if (!tmp.getStatus().equals(taskToCollect.getStatus())) {
+                return ResponseEntity.ok(changeTaskStatus(tmp.getId(), taskToCollect.getStatus()));
+            }
+            tasksRepository.save(taskToCollect);
         return  ResponseEntity.ok(HttpStatus.OK);
     }
 

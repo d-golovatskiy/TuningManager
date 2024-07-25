@@ -84,8 +84,17 @@ public class MonitoringDataController {
 
     @PostMapping(value = "/data/{id}", consumes = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<HttpStatus> postData(@PathVariable(name = "id") Long id, @RequestBody String s) throws IOException {
+        TaskToCollect t = taskToCollectService.getTaskToCollect(id,null,null,null).get(0);
 
-        File file = new File(dataPath+"task_id_"+id.toString()+".csv");
+        String fileExtension;
+
+        if(t.getDataSource().equals("influx") || t.getDataSource().equals("prometheus")){
+            fileExtension = ".csv";
+        }
+        else{
+          fileExtension = ".json";
+        }
+        File file = new File(dataPath+"task_id_"+id.toString()+fileExtension);
         if (!file.exists()){
             file.createNewFile();
         }
@@ -93,7 +102,7 @@ public class MonitoringDataController {
         outputStream.write(s.getBytes());
         outputStream.flush();
         outputStream.close();
-        TaskToCollect t = taskToCollectService.getTaskToCollect(id,null,null,null).get(0);
+
         t.setStatus("finished");
         taskToCollectService.changeTaskStatus(t.getId(),"finished");
         return ResponseEntity.ok(HttpStatus.OK);
