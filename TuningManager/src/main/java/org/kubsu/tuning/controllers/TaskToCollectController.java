@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/taskToCollect")
 public class TaskToCollectController {
-
     private TaskToCollectService taskToCollectService;
 
     @Autowired

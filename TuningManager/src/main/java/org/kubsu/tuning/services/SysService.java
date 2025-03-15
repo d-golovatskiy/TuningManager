@@ -8,12 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class SysService {
-
-
     private final SystemRepository systemRepository;
 
     @Autowired
@@ -22,7 +21,7 @@ public class SysService {
     }
 
     public List<Sys> getSys(Long id, String name){
-        if(id == null && name == null){
+        if (id == null && name == null){
             return systemRepository.findAll();
         }
         else {
@@ -32,6 +31,10 @@ public class SysService {
                 return List.of(systemRepository.findById(id).get());
             }
         }
+    }
+
+    public Optional<Sys> findById(Long id){
+        return systemRepository.findById(id);
     }
 
     public ResponseEntity<HttpStatus> addSys(Sys sys){

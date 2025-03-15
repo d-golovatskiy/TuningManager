@@ -14,7 +14,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/alarms")
 public class AlarmController {
-
     private final AlarmService alarmService;
 
     @Autowired
@@ -53,6 +52,4 @@ public class AlarmController {
     public ResponseEntity<HttpStatus> deleteAlarm(@PathVariable(name="id") Long id){
         return alarmService.deleteAlarm(id);
     }
-
-
 }

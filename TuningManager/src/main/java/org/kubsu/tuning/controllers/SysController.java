@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/sys")
 public class SysController {
-
     private final SysService sysService;
 
     public SysController(SysService sysService) {

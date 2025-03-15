@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/v1/sysMeas")
 public class SysMeasController {
-
     private final SysMeasService sysMeasService;
 
     public SysMeasController(SysMeasService sysMeasService) {

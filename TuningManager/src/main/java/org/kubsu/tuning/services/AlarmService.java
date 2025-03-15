@@ -16,9 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class AlarmService {
-
     private final AlarmRepository alarmRepository;
-
 
     @Autowired
     public AlarmService(AlarmRepository alarmRepository) {
@@ -43,13 +41,11 @@ public class AlarmService {
             }
             return alarms;
         }
-
     }
 
     public ResponseEntity<HttpStatus> postAlarm(Alarm alarm){
         alarmRepository.save(alarm);
         return ResponseEntity.ok(HttpStatus.OK);
-
     }
 
     public ResponseEntity<HttpStatus> patchAlarm(Alarm alarm){
@@ -60,13 +56,10 @@ public class AlarmService {
             alarmRepository.save(alarm);
         }
         return ResponseEntity.ok(HttpStatus.OK);
-
     }
 
     public ResponseEntity<HttpStatus> deleteAlarm(Long id){
         alarmRepository.deleteById(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
-
-
 }

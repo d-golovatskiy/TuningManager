@@ -2,56 +2,35 @@ package org.kubsu.tuning.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
-@Getter
-@Table(name = "Configs")
+@Data
+@Table(name = "configs")
+@NoArgsConstructor
 public class Config  {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name="param")
-    String param;
+    @Column(name="description")
+    String description;
 
-
-    @Column(name="value")
-    String value;
-
-    @Column(name = "date")
-    Timestamp date;
-
+    @Column(name="creation_timestamp")
+    Timestamp creationTimestamp;
 
     @JsonIgnore
-    @ManyToOne(optional = false, targetEntity = Sys.class)
-    @JoinColumn(name = "sys_id", referencedColumnName = "id", insertable=false, updatable=false )
+    @OneToOne
+    @JoinColumn(name = "sys_id", referencedColumnName = "id")
     Sys sys;
 
-    public Config() {
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setParam(String param) {
-        this.param = param;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public void setDate(Timestamp date) {
-        this.date = date;
-    }
-
-    public void setSys(Sys sys) {
-        this.sys = sys;
-    }
+    @OneToMany(mappedBy = "config", cascade = CascadeType.ALL)
+    List<ParamAndValue> params = new ArrayList<>();
 }

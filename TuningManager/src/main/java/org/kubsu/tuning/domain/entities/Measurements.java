@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 @Table(name = "measurements")
 public class Measurements {
-
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +18,6 @@ public class Measurements {
     @Column(name="description")
     String description;
 
-
+    @Column(name = "field_name")
+    String fieldName;
 }

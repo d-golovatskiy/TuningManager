@@ -10,7 +10,6 @@ import lombok.Getter;
 @Entity
 @Table(name="affect_exception")
 public class AffectException {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
@@ -34,6 +33,4 @@ public class AffectException {
 
     public AffectException() {
     }
-
-
 }

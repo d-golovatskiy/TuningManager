@@ -42,5 +42,7 @@ public class SysMeasService {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-
+    public List<SysMeas> findAllByMeasIds(List<Long> measIds, Long sysId){
+        return sysMeasRepository.findAllByMeasIdInAndSysId(measIds, sysId);
+    }
 }

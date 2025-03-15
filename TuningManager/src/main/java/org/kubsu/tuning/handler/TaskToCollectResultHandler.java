@@ -23,11 +23,11 @@ public class TaskToCollectResultHandler {
 
     @KafkaHandler
     public void handleTaskToCollectResult(TaskToCollectResultDto taskToCollectResultDto) {
-        TaskToCollect t = taskToCollectService.getTaskToCollect(taskToCollectResultDto.getTaskId(), null,null,null).get(0);
+        TaskToCollect taskToCollect = taskToCollectService.getTaskToCollect(taskToCollectResultDto.getTaskId(), null,null,null).get(0);
 
-        t.setStatus("finished");
-        t.setCollectingStatus(taskToCollectResultDto.getTaskToCollectResult().toString());
+        taskToCollect.setStatus("finished");
+        taskToCollect.setCollectingStatus(taskToCollectResultDto.getTaskToCollectResult().toString());
 
-        taskToCollectService.save(t);
+        taskToCollectService.save(taskToCollect);
     }
 }

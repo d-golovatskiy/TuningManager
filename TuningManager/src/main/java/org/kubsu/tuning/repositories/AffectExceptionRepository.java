@@ -8,9 +8,7 @@ import java.util.List;
 
 @Repository
 public interface AffectExceptionRepository extends JpaRepository<AffectException, Long> {
-
     List<AffectException> findAffectExceptionBySysId(Long sysId);
     List<AffectException> findAffectExceptionByTaskId(Long taskId);
     AffectException findAffectExceptionByTaskIdAndSysId(Long taskId, Long sysId);
-
 }

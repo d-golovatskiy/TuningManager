@@ -17,9 +17,4 @@ public class AffectingScheme {
 
     @Column(name="affecting_sys_id")
     Long affectingId;
-
-
-
-
-
 }

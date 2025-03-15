@@ -24,8 +24,7 @@ public class AffectSchemeController {
     public List<AffectingScheme> getAffects(@RequestParam(name="affected_id", required = false) Long affectedId,
                                             @RequestParam(name = "affecting_id",required = false) Long affectingId,
                                             @RequestParam(name = "affect_scheme_id", required = false) Long id){
-    return   affectSchemeService.getAffectingSystems(id,affectedId,affectingId);
-
+        return affectSchemeService.getAffectingSystems(id,affectedId,affectingId);
     }
 
     @PostMapping("")

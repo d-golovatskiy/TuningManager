@@ -11,7 +11,6 @@ import java.util.List;
 
 @Service
 public class MeasurementService {
-
     private final MeasurementsRepository measurementsRepository;
 
     @Autowired
@@ -40,7 +39,4 @@ public class MeasurementService {
         measurementsRepository.deleteById(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
-
-
-
 }

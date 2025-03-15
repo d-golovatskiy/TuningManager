@@ -10,9 +10,8 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table(name= "tasks")
+@Table(name= "tasks_to_collect")
 public class TaskToCollect {
-
     @Id
     @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,8 +47,4 @@ public class TaskToCollect {
 
     @OneToMany(mappedBy = "taskToCollect")
     private List<AffectException> affectExceptions;
-
-
-
-
 }

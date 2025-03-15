@@ -5,6 +5,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.kubsu.tuning.domain.TaskToConfigure;
 import org.kubsu.tuning.domain.dto.TaskToCollectResultDto;
 import org.kubsu.tuning.domain.entities.TaskToCollect;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +45,16 @@ public class KafkaConfig {
     }
 
     @Bean
+    ProducerFactory<String, TaskToConfigure> producerFactoryTaskToConfigureQueue() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+        return new DefaultKafkaProducerFactory<>(config);
+    }
+
+    @Bean
     ConsumerFactory<String, TaskToCollectResultDto> consumerFactoryTaskToCollectResult(){
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -74,7 +85,21 @@ public class KafkaConfig {
     }
 
     @Bean
+    NewTopic createTaskToConfigureResultsTopic() {
+        return TopicBuilder.name("task-to-configure_queue-topic")
+                .partitions(3)
+                .replicas(3)
+                .configs(Map.of("min.insync.replicas", "2"))
+                .build();
+    }
+
+    @Bean
     KafkaTemplate<String, TaskToCollect> kafkaTemplateTaskToCollectQueue(ProducerFactory<String, TaskToCollect> producerFactory) {
+        return new KafkaTemplate<>(producerFactory);
+    }
+
+    @Bean
+    KafkaTemplate<String, TaskToConfigure> kafkaTemplateTaskToConfigureQueue(ProducerFactory<String, TaskToConfigure> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }
