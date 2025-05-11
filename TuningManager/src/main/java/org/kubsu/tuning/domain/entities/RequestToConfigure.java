@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
@@ -50,8 +51,19 @@ public class RequestToConfigure {
     @Column(name = "status")
     private String status;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "requestToConfigure", cascade = CascadeType.ALL)
-    private List<ConfigureRequestMeasurements> configureRequestMeasurements = new ArrayList<>();
+    @Column(name = "configure_status")
+    private String configureStatus;
+
+    /*@OneToMany(fetch = FetchType.LAZY, mappedBy = "requestToConfigure", cascade = CascadeType.ALL)
+    private List<ConfigureRequestMeasurements> configureRequestMeasurements = new ArrayList<>();*/
+
+    @ManyToOne
+    @JoinColumn(name = "meas_id", referencedColumnName = "id")
+    private Measurements measurements;
+
+    @OneToOne
+    @JoinColumn(name = "workload_profile_id", referencedColumnName = "id")
+    private WorkloadProfile workloadProfile;
 
     @Transient
     private TaskToConfigure taskToConfigure;

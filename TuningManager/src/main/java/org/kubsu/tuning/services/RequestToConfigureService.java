@@ -1,7 +1,6 @@
 package org.kubsu.tuning.services;
 
 import org.kubsu.tuning.domain.dto.RequestToConfigureWriteDto;
-import org.kubsu.tuning.domain.entities.ConfigureRequestMeasurements;
 import org.kubsu.tuning.domain.entities.Measurements;
 import org.kubsu.tuning.domain.entities.RequestToConfigure;
 import org.kubsu.tuning.domain.entities.SysMeas;
@@ -18,6 +17,8 @@ public class RequestToConfigureService {
     private RequestToConfigureRepository requestToConfigureRepository;
     @Autowired
     private SysMeasService sysMeasService;
+    @Autowired
+    private WorkloadProfileService workloadProfileService;
 
     public RequestToConfigure save(RequestToConfigure requestToConfigure) {
         return requestToConfigureRepository.save(requestToConfigure);
@@ -40,20 +41,18 @@ public class RequestToConfigureService {
     }
 
     public RequestToConfigure createAndSaveByRequestToConfigureWriteDto(RequestToConfigureWriteDto requestToConfigureWriteDto) {
-        List<SysMeas> sysMeasList = sysMeasService.findAllByMeasIds(requestToConfigureWriteDto.getMeasurementIds(), requestToConfigureWriteDto.getSysId());
+        SysMeas sysMeas = sysMeasService.findByMeasId(requestToConfigureWriteDto.getMeasurementId(), requestToConfigureWriteDto.getSysId());
         RequestToConfigure requestToConfigure = new RequestToConfigure();
-        requestToConfigure.setSys(sysMeasList.get(0).getSys());
+        requestToConfigure.setMeasurements(sysMeas.getMeasurements());
+        requestToConfigure.setSys(sysMeas.getSys());
         requestToConfigure.setConfiguringPeriodStartDate(requestToConfigureWriteDto.getConfigurePeriodStartDate());
         requestToConfigure.setConfiguringPeriodEndDate(requestToConfigureWriteDto.getConfigurePeriodEndDate());
         requestToConfigure.setDescription(requestToConfigureWriteDto.getDescription());
         requestToConfigure.setStatus("created");
-        sysMeasList.forEach(sysMeas -> {
-            Measurements measurements = sysMeas.getMeasurements();
-            ConfigureRequestMeasurements configureRequestMeasurements = new ConfigureRequestMeasurements();
-            configureRequestMeasurements.setMeasurements(measurements);
-            configureRequestMeasurements.setRequestToConfigure(requestToConfigure);
-            requestToConfigure.getConfigureRequestMeasurements().add(configureRequestMeasurements);
-        });
+        if (workloadProfileService.findBySysId(requestToConfigureWriteDto.getSysId()).stream()
+                .noneMatch(workloadProfile -> workloadProfile.getId().equals(requestToConfigureWriteDto.getWorkloadProfileId()))){
+            throw new IllegalArgumentException("sys not have workload profile with given id");
+        }
         return requestToConfigureRepository.save(requestToConfigure);
     }
 }

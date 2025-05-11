@@ -1,5 +1,6 @@
 package org.kubsu.tuning.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,16 +36,15 @@ public class TaskToCollect {
     @Column(name="date_end")
     Timestamp dateEnd;
 
-    @Column(name = "data_source")
-    String dataSource;
-
     @Column(name = "collecting_status")
     String collectingStatus;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @ManyToOne(optional = false, targetEntity = SysMeas.class)
     @JoinColumn(name = "sys_meas_id", referencedColumnName = "id", insertable=false, updatable=false )
     SysMeas sysMeas;
 
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @OneToMany(mappedBy = "taskToCollect")
     private List<AffectException> affectExceptions;
 }

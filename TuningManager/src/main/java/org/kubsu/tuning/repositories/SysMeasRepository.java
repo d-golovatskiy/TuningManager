@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface SysMeasRepository extends JpaRepository<SysMeas, Long> {
-    List<SysMeas> findAllByMeasIdInAndSysId(List<Long> measIds, Long sysId);
+    SysMeas findByMeasIdAndSysId(Long measId, Long sysId);
+    SysMeas findBySysIdAndIsWorkloadIsTrue(Long sysId);
 }

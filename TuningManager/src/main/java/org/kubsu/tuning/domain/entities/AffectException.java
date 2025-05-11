@@ -30,7 +30,4 @@ public class AffectException {
     @ManyToOne(optional = false, targetEntity = TaskToCollect.class)
     @JoinColumn(name = "task_id", referencedColumnName = "id", insertable=false, updatable=false )
     TaskToCollect taskToCollect;
-
-    public AffectException() {
-    }
 }

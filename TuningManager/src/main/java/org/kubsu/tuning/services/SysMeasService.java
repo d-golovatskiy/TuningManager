@@ -42,7 +42,11 @@ public class SysMeasService {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-    public List<SysMeas> findAllByMeasIds(List<Long> measIds, Long sysId){
-        return sysMeasRepository.findAllByMeasIdInAndSysId(measIds, sysId);
+    public SysMeas findByMeasId(Long measId, Long sysId){
+        return sysMeasRepository.findByMeasIdAndSysId(measId, sysId);
+    }
+
+    public SysMeas getWorkloadSysMeasForSys(Long sysId) {
+        return sysMeasRepository.findBySysIdAndIsWorkloadIsTrue(sysId);
     }
 }

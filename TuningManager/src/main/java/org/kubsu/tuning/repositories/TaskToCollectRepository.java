@@ -13,12 +13,12 @@ import java.util.List;
 @Repository
 public interface TaskToCollectRepository extends JpaRepository<TaskToCollect, Long> {
     @Query(value = "select t.* from tasks_to_collect t join sys_measurements sm on t.sys_meas_id = sm.id " +
-            "where sm.meas_id in :measIds and sm.sys_id = :sysId " +
+            "where sm.meas_id = :measId and sm.sys_id = :sysId " +
             "and (t.date_start between :startTime and :endTime " +
             "or t.date_end between :startTime and :endTime) " +
             "and t.collecting_status = 'OK'", nativeQuery = true)
     List<TaskToCollect> findAllBySystemIdAndCrossingDateRange(@Param(value = "startTime") Timestamp startTime,
                                                               @Param(value = "endTime") Timestamp endTime,
-                                                              @Param(value = "measIds") List<Long> measIds,
+                                                              @Param(value = "measId") Long measId,
                                                               @Param(value = "sysId") Long sysId);
 }

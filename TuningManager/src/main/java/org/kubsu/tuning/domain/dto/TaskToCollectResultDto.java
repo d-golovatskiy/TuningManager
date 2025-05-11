@@ -1,14 +1,14 @@
 package org.kubsu.tuning.domain.dto;
 
-import org.kubsu.tuning.domain.TaskToCollectResult;
+import org.kubsu.tuning.domain.TaskResult;
 
 public class TaskToCollectResultDto {
     private Long taskId;
-    private TaskToCollectResult taskToCollectResult;
+    private TaskResult taskToCollectResult;
     public Long getTaskId() {
         return taskId;
     }
-    public TaskToCollectResult getTaskToCollectResult() {
+    public TaskResult getTaskToCollectResult() {
         return taskToCollectResult;
     }
 }

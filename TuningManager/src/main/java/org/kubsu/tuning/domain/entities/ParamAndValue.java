@@ -38,6 +38,15 @@ public class ParamAndValue {
     @Column(name = "creation_timestamp")
     Timestamp creationTimestamp;
 
+    @Column(name = "min_value")
+    Double minValue;
+
+    @Column(name = "max_value")
+    Double maxValue;
+
+    @Column(name = "step")
+    Double step;
+
     @ToString.Exclude
     @JsonProperty( value = "config", access = JsonProperty.Access.WRITE_ONLY)
     @SerializedName("config")

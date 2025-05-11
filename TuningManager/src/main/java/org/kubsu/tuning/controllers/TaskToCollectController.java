@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
-@RequestMapping("/v1/taskToCollect")
+@RequestMapping("/v1/task-to-collect")
 public class TaskToCollectController {
     private TaskToCollectService taskToCollectService;
 

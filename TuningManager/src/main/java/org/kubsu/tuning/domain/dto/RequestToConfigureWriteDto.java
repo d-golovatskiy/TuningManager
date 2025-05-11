@@ -12,7 +12,8 @@ public class RequestToConfigureWriteDto {
     private Long sysId;
     private Timestamp configurePeriodStartDate;
     private Timestamp configurePeriodEndDate;
-    private List<Long> measurementIds;
+    private Long measurementId;
     private String description;
     private String status;
+    private Long workloadProfileId;
 }

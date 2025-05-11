@@ -2,8 +2,6 @@ package org.kubsu.tuning.services;
 
 import org.kubsu.tuning.domain.TaskToConfigure;
 import org.kubsu.tuning.domain.entities.Config;
-import org.kubsu.tuning.domain.entities.ConfigChangeLog;
-import org.kubsu.tuning.domain.entities.ConfigureRequestMeasurements;
 import org.kubsu.tuning.domain.entities.Measurements;
 import org.kubsu.tuning.domain.entities.RequestToConfigure;
 import org.kubsu.tuning.domain.entities.TaskToCollect;
@@ -18,7 +16,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 @Service
 public class TaskToConfigureService {
@@ -27,23 +24,16 @@ public class TaskToConfigureService {
     @Autowired
     private ConfigService configService;
     @Autowired
-    private ConfigChangeLogService changeLogService;
-    @Autowired
     private KafkaTemplate<String, TaskToConfigure> kafkaTemplate;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
-
 
     public TaskToConfigure createByRequestToConfigure(RequestToConfigure requestToConfigure) {
         Timestamp start = requestToConfigure.getConfiguringPeriodStartDate();
         Timestamp end = requestToConfigure.getConfiguringPeriodEndDate();
-        List<Measurements> measurements = requestToConfigure.getConfigureRequestMeasurements().stream()
-                .map(ConfigureRequestMeasurements::getMeasurements)
-                .collect(Collectors.toList());
-        List<Long> measIds = measurements.stream()
-                .map(Measurements::getId)
-                .collect(Collectors.toList());
+        Measurements measurements = requestToConfigure.getMeasurements();
+        Long measId = measurements.getId();
         Long sysId = requestToConfigure.getSys().getId();
-        List<TaskToCollect> tasksToCollect = taskToCollectService.getAllTasksToCollectThatCrossingWithDateRange(start, end, measIds, sysId);
+        List<TaskToCollect> tasksToCollect = taskToCollectService.getAllTasksToCollectThatCrossingWithDateRange(start, end, measId, sysId);
         List<String> fileNames = new ArrayList<>();
         tasksToCollect.stream().forEach(e -> {
             fileNames.add("task_to_collect_id_" + e.getId() + ".csv");
@@ -56,6 +46,7 @@ public class TaskToConfigureService {
         Config config = configService.findBySys(requestToConfigure.getSys());
         taskToConfigure.setConfig(config);
         taskToConfigure.setRequestToConfigureId(requestToConfigure.getId());
+        taskToConfigure.setWorkloadProfile(requestToConfigure.getWorkloadProfile());
         return taskToConfigure;
     }
 

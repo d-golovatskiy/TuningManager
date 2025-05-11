@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,9 +30,6 @@ public class Sys {
     @OneToMany(mappedBy = "sys")
     private List<Alarm> alarms;
 
-    public Sys(Long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-    }
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sys", cascade = CascadeType.ALL)
+    private List<WorkloadProfile> workloadProfiles = new ArrayList<>();
 }

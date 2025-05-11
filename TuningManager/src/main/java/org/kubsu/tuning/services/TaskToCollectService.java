@@ -1,5 +1,7 @@
 package org.kubsu.tuning.services;
 
+import org.kubsu.tuning.domain.dto.TaskToCollectDto;
+import org.kubsu.tuning.domain.entities.SysMeas;
 import org.kubsu.tuning.domain.entities.TaskToCollect;
 import org.kubsu.tuning.repositories.TaskToCollectRepository;
 import org.slf4j.Logger;
@@ -20,24 +22,30 @@ import java.util.stream.Collectors;
 @Service
 public class TaskToCollectService {
     private final TaskToCollectRepository taskToCollectRepository;
-    private KafkaTemplate<String, TaskToCollect> kafkaTemplate;
+    private final SysMeasService sysMeasService;
+    private KafkaTemplate<String, TaskToCollectDto> kafkaTemplate;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public TaskToCollectService(TaskToCollectRepository taskToCollectRepository, KafkaTemplate<String, TaskToCollect> kafkaTemplate) {
+    public TaskToCollectService(TaskToCollectRepository taskToCollectRepository, KafkaTemplate<String, TaskToCollectDto> kafkaTemplate, SysMeasService sysMeasService) {
         this.taskToCollectRepository = taskToCollectRepository;
         this.kafkaTemplate = kafkaTemplate;
+        this.sysMeasService = sysMeasService;
     }
 
     public HttpStatus changeTaskStatus(Long id, String status) throws IOException {
         if (!status.equals("started") && !status.equals("stopped") && !status.equals("finished")) {
             return HttpStatus.BAD_REQUEST;
         } else {
-            TaskToCollect tmp = taskToCollectRepository.findById(id).get();
+            TaskToCollect tmp =  taskToCollectRepository.findById(id).get();
+            SysMeas workload = sysMeasService.getWorkloadSysMeasForSys(tmp.getSysMeas().getSysId());
+            if (workload == null) {
+                throw new IllegalArgumentException("workload not found");
+            }
             tmp.setStatus(status);
-            CompletableFuture<SendResult<String, TaskToCollect>> future = kafkaTemplate.send("task-to-collect-queue-topic"
+            CompletableFuture<SendResult<String, TaskToCollectDto>> future = kafkaTemplate.send("task-to-collect-queue-topic"
                     , tmp.getId().toString()
-                    , tmp);
+                    , new TaskToCollectDto(tmp, workload));
             future.whenComplete((res, exception) -> {
                 if (exception != null) {
                     log.error("Failed to send message: {}", exception.getMessage());
@@ -102,8 +110,8 @@ public class TaskToCollectService {
         }
     }
 
-    public List<TaskToCollect> getAllTasksToCollectThatCrossingWithDateRange(Timestamp start, Timestamp end, List<Long> measIds, Long sysId) {
-        return taskToCollectRepository.findAllBySystemIdAndCrossingDateRange(start, end, measIds, sysId);
+    public List<TaskToCollect> getAllTasksToCollectThatCrossingWithDateRange(Timestamp start, Timestamp end, Long measId, Long sysId) {
+        return taskToCollectRepository.findAllBySystemIdAndCrossingDateRange(start, end, measId, sysId);
     }
 
     public TaskToCollect save(TaskToCollect taskToCollect) {

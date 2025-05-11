@@ -1,5 +1,6 @@
 package org.kubsu.tuning.controllers;
 
+import org.kubsu.tuning.domain.entities.MeasAndInfluxTagValues;
 import org.kubsu.tuning.domain.entities.Measurements;
 import org.kubsu.tuning.services.MeasurementService;
 import org.springframework.http.HttpStatus;
@@ -20,23 +21,26 @@ public class MeasurementsController {
 
     @GetMapping("")
     public List<Measurements> getMeas(@RequestParam(name = "id", required = false) Long id){
-       return measurementService.getMeas(id);
+       return measurementService.findById(id);
     }
 
     @PostMapping("")
     public ResponseEntity<HttpStatus> addMeas(@RequestBody Measurements measurements){
-        return measurementService.addMeas(measurements);
+        return measurementService.save(measurements);
     }
 
     @PatchMapping("")
     public ResponseEntity<HttpStatus> patchMeas(@RequestBody Measurements measurements){
-        return measurementService.patchMeas(measurements);
+        return measurementService.update(measurements);
     }
 
     @DeleteMapping("")
     public ResponseEntity<HttpStatus> deleteMeas(@RequestParam(name = "id") Long id){
-        return measurementService.deleteMeas(id);
+        return measurementService.deleteById(id);
     }
 
-
+    @PostMapping("/{measId}/add-tag-values")
+    public List<MeasAndInfluxTagValues> setTagValuesByIds(@PathVariable("measId") Long measId, @RequestBody List<Long> tagValueIds){
+        return measurementService.setTagValuesByIds(measId, tagValueIds);
+    }
 }
